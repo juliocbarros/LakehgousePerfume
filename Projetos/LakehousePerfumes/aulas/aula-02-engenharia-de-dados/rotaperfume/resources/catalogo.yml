@@ -1,0 +1,26 @@
+# O catálogo em si (lakehouse_rotaperfume) é criado fora do bundle, por
+# scripts/criar-catalogo.sh — ver o comentário nesse script para o motivo.
+# Aqui vive o resto do catálogo: schemas e o volume de raw.
+
+resources:
+  schemas:
+    bronze:
+      name: bronze
+      catalog_name: ${var.catalog}
+      comment: Camada raw — arquivos exatamente como saíram do ERP/CRM, byte a byte, sem transformação.
+    silver:
+      name: silver
+      catalog_name: ${var.catalog}
+      comment: Camada de dados limpos e conformados, prontos para modelagem analítica.
+    gold:
+      name: gold
+      catalog_name: ${var.catalog}
+      comment: Camada de métricas e agregados de negócio, consumida por dashboards e relatórios.
+
+  volumes:
+    raw:
+      name: raw
+      catalog_name: ${var.catalog}
+      schema_name: bronze
+      volume_type: MANAGED
+      comment: Landing zone dos CSVs de origem (erp/ e crm/), antes de qualquer tabela bronze existir.

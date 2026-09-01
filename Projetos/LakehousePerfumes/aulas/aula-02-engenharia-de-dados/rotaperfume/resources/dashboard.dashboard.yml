@@ -1,0 +1,12 @@
+# Dashboard AI/BI comercial, versionado como código junto com o resto do
+# bundle. As queries do JSON usam nome de tabela puro (ex.: FROM
+# fato_vendas) — catálogo e schema vêm daqui, de dataset_catalog/dataset_schema.
+
+resources:
+  dashboards:
+    dashboard_comercial:
+      display_name: 'Rotaperfume — Comercial'
+      file_path: ../src/dashboards/dashboard-comercial.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}
+      dataset_schema: gold

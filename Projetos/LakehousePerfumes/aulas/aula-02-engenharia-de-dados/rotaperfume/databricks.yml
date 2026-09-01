@@ -1,0 +1,44 @@
+# Databricks Asset Bundle para o projeto rotaperfume.
+# Esta é a entrega 1 de 6: catálogo como código + chegada do raw no Volume.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: rotaperfume
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo Unity Catalog usado por este bundle
+    default: lakehouse_rotaperfume
+  warehouse_id:
+    description: SQL Warehouse serverless usado para queries e para o script de criação do catálogo
+    default: 7c3ea71f9ae30d85
+
+targets:
+  dev:
+    default: true
+    workspace:
+      host: https://dbc-604bc86c-0b09.cloud.databricks.com
+    variables:
+      catalog: lakehouse_rotaperfume
+      warehouse_id: 7c3ea71f9ae30d85
+    # ARMADILHA IMPORTANTE: NÃO use `mode: development` aqui. Ele prefixa o
+    # nome dos recursos com [dev seu_usuario] — inclusive os SCHEMAS do Unity
+    # Catalog, que virariam dev_fulano_bronze e quebrariam todo o SQL da
+    # noite (que referencia lakehouse_rotaperfume.bronze.*). Em vez disso,
+    # pausamos o agendamento explicitamente.
+    presets:
+      trigger_pause_status: PAUSED
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-604bc86c-0b09.cloud.databricks.com
+      root_path: /Workspace/Users/juliobarro@gmail.com/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: lakehouse_rotaperfume
+      warehouse_id: 7c3ea71f9ae30d85
+    permissions:
+      - user_name: juliobarro@gmail.com
+        level: CAN_MANAGE

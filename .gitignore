@@ -1,0 +1,15 @@
+# Este repositório git vive na raiz de Documentos, mas só o projeto
+# LakehousePerfumes (e este arquivo/README) devem entrar no Git — tudo o
+# resto em Documentos é pessoal e nunca deve ser versionado aqui.
+
+# Ignora tudo na raiz por padrão...
+/*
+# ...exceto o que é do projeto.
+!/README.md
+!/.gitignore
+!/Projetos
+
+# Dentro de Projetos, ignora tudo...
+/Projetos/*
+# ...exceto o LakehousePerfumes.
+!/Projetos/LakehousePerfumes
