@@ -90,7 +90,7 @@ Projetos/LakehousePerfumes/
 │   ├── erp/                        # produtos, pedidos, itens_pedido, pagamentos, estoque
 │   └── crm/                        # clientes, vendedores, carteira, oportunidades, visitas
 ├── .llm/                           # The design prompts this project was built from
-└── aulas/engenharia-de-dados/rotaperfume/   # The Databricks Asset Bundle
+└── aulas/data-engineering/rotaperfume/   # The Databricks Asset Bundle
     ├── databricks.yml              # Bundle definition, targets (dev/prod), variables
     ├── scripts/                    # Catalog bootstrap, raw file upload, single-task runner
     ├── resources/                  # Bundle resources: job, dashboard, Genie space
@@ -143,7 +143,7 @@ On top of the gold layer, a purchase-propensity pipeline turns "3,000 customers"
 ## Getting started
 
 ```bash
-cd Projetos/LakehousePerfumes/aulas/engenharia-de-dados/rotaperfume
+cd Projetos/LakehousePerfumes/aulas/data-engineering/rotaperfume
 
 databricks bundle validate --target dev --profile <your-profile>
 databricks bundle deploy   --target dev --profile <your-profile>
