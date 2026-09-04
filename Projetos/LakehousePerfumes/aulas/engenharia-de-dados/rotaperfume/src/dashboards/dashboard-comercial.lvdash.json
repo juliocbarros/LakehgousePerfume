@@ -25,6 +25,14 @@
         "ORDER BY receita DESC ",
         "LIMIT 20"
       ]
+    },
+    {
+      "name": "ds_fila_semanal",
+      "displayName": "Fila da Semana",
+      "queryLines": [
+        "SELECT vendedor, ordem, razao_social, cidade, score, faixa, motivo, sugestao ",
+        "FROM fila_semanal"
+      ]
     }
   ],
   "pages": [
@@ -333,6 +341,83 @@
             }
           },
           "position": {"x": 0, "y": 25, "width": 12, "height": 8}
+        }
+      ]
+    },
+    {
+      "name": "fila",
+      "displayName": "Fila da semana",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1",
+      "layout": [
+        {
+          "widget": {
+            "name": "titulo-fila",
+            "multilineTextboxSpec": {"lines": ["# Fila da Semana"]}
+          },
+          "position": {"x": 0, "y": 0, "width": 12, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "subtitulo-fila",
+            "multilineTextboxSpec": {"lines": ["Os 200 contatos da semana, um vendedor de cada vez — escolha o vendedor para ver a lista dele, em ordem, com motivo e sugestão."]}
+          },
+          "position": {"x": 0, "y": 1, "width": 12, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "filtro-vendedor-fila",
+            "queries": [{
+              "name": "q_vendedor_fila",
+              "query": {"datasetName": "ds_fila_semanal", "fields": [{"name": "vendedor", "expression": "`vendedor`"}], "disaggregated": false}
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {"fields": [{"fieldName": "vendedor", "displayName": "Vendedor", "queryName": "q_vendedor_fila"}]},
+              "frame": {"showTitle": true, "title": "Vendedor"}
+            }
+          },
+          "position": {"x": 0, "y": 2, "width": 4, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "tabela-fila-semanal",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_fila_semanal",
+                "fields": [
+                  {"name": "ordem", "expression": "`ordem`"},
+                  {"name": "razao_social", "expression": "`razao_social`"},
+                  {"name": "cidade", "expression": "`cidade`"},
+                  {"name": "score", "expression": "`score`"},
+                  {"name": "faixa", "expression": "`faixa`"},
+                  {"name": "motivo", "expression": "`motivo`"},
+                  {"name": "sugestao", "expression": "`sugestao`"}
+                ],
+                "disaggregated": true,
+                "orders": [{"direction": "ASC", "expression": "`ordem`"}]
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {"fieldName": "ordem", "displayName": "#"},
+                  {"fieldName": "razao_social", "displayName": "Cliente"},
+                  {"fieldName": "cidade", "displayName": "Cidade"},
+                  {"fieldName": "score", "displayName": "Nota", "format": {"type": "number", "decimalPlaces": {"type": "max", "places": 2}}},
+                  {"fieldName": "faixa", "displayName": "Faixa"},
+                  {"fieldName": "motivo", "displayName": "Por que ligar"},
+                  {"fieldName": "sugestao", "displayName": "O que oferecer"}
+                ]
+              },
+              "frame": {"showTitle": true, "title": "Fila do vendedor selecionado"}
+            }
+          },
+          "position": {"x": 0, "y": 4, "width": 12, "height": 10}
         }
       ]
     }

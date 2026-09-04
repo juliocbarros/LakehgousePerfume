@@ -7,6 +7,13 @@ bundle:
 include:
   - resources/*.yml
 
+# Preventivo: garante que src/ml/ suba no sync mesmo se algum .gitignore
+# vier a excluir esse caminho (erro conhecido: "Unable to access the
+# notebook" quando o bundle não sobe o notebook por causa do gitignore).
+sync:
+  include:
+    - src/ml/**
+
 variables:
   catalog:
     description: Catálogo Unity Catalog usado por este bundle

@@ -37,6 +37,18 @@
         "question": [
           "Um lançamento de produto vende mais forte nos primeiros meses?"
         ]
+      },
+      {
+        "id": "1aa71264a24cf2568d6c544ec9e4d9f2",
+        "question": [
+          "Quem eu ligo essa semana?"
+        ]
+      },
+      {
+        "id": "2547d177f17ccf828655a366555b7c9f",
+        "question": [
+          "Por que esse cliente está no topo da minha lista?"
+        ]
       }
     ]
   },
@@ -62,6 +74,9 @@
       },
       {
         "identifier": "lakehouse_rotaperfume.gold.fato_vendas"
+      },
+      {
+        "identifier": "lakehouse_rotaperfume.gold.fila_semanal"
       },
       {
         "identifier": "lakehouse_rotaperfume.gold.margem_por_categoria"
@@ -145,6 +160,28 @@
           "FROM lakehouse_rotaperfume.gold.receita_mensal\n",
           "ORDER BY ano, mes"
         ]
+      },
+      {
+        "id": "e9be57097766944be0432c2e1a6ac10a",
+        "question": [
+          "Quem eu ligo essa semana?"
+        ],
+        "sql": [
+          "SELECT vendedor, ordem, razao_social, ROUND(score, 2) AS score, motivo\n",
+          "FROM lakehouse_rotaperfume.gold.fila_semanal\n",
+          "WHERE vendedor = 'Débora Souza'\n",
+          "ORDER BY ordem"
+        ]
+      },
+      {
+        "id": "fd4cd7811e264c11516ea7561f46f500",
+        "question": [
+          "Por que esse cliente está no topo da minha lista?"
+        ],
+        "sql": [
+          "SELECT razao_social, score, faixa, motivo, sugestao, recencia_dias, atraso_relativo\n",
+          "FROM lakehouse_rotaperfume.gold.explicar_prioridade('178')"
+        ]
       }
     ],
     "text_instructions": [
@@ -156,7 +193,8 @@
           "GLOSSARIO: ruptura = saldo de estoque zerado; carteira = relacao cliente-vendedor; oportunidade = negocio no funil comercial; devolucao = item com quantidade negativa (cliente devolveu); SKU = codigo do produto; segmento = tipo de negocio do cliente; atingimento de meta = receita do vendedor no mes / meta mensal; curva ABC = classificacao de produtos por receita acumulada (A ate 80%, B ate 95%, C o resto).\n",
           "REGRA DE SAZONALIDADE, A MAIS IMPORTANTE: o pico de vendas e o mes ANTERIOR a data comemorativa, porque o varejo compra antes. Abril (Dia das Maes), junho (Namorados) e outubro (Dia das Criancas/Black Friday) sao picos. Dezembro e janeiro sao VALE ESPERADO E SAUDAVEL - nunca chame isso de queda ou de mes ruim. Use a coluna mes_pico_setor de gold.receita_mensal.\n",
           "CALCULO DAS METRICAS: receita = SUM(receita) em gold.fato_vendas (ja inclui devolucao negativa); receita bruta = SUM(receita) FILTER (WHERE NOT devolucao); margem = SUM(margem) = receita menos custo do produto, sem desconto comercial nem frete; margem % = 100*SUM(margem)/SUM(receita); ticket medio = SUM(receita)/COUNT(DISTINCT pedido_id); atingimento de meta = ja calculado em gold.mart_vendas_por_vendedor; churn/cliente em risco = sem compra (nao cancelada) ha mais de 90 dias, ja calculado em gold.clientes_em_risco.\n",
-          "AVISOS: devolucao entra com valor NEGATIVO em receita e quantidade - para o bruto vendido, filtre NOT devolucao. Nunca use bronze/silver como fonte, so a gold. Prefira as views de negocio (receita_mensal, ranking_marcas, margem_por_categoria, clientes_em_risco, efeito_lancamento, ruptura_por_marca) em vez de reagregar fato_vendas do zero quando a pergunta bater com uma delas."
+          "AVISOS: devolucao entra com valor NEGATIVO em receita e quantidade - para o bruto vendido, filtre NOT devolucao. Nunca use bronze/silver como fonte, so a gold. Prefira as views de negocio (receita_mensal, ranking_marcas, margem_por_categoria, clientes_em_risco, efeito_lancamento, ruptura_por_marca) em vez de reagregar fato_vendas do zero quando a pergunta bater com uma delas.\n",
+          "FILA SEMANAL E FERRAMENTAS DO VENDEDOR: gold.fila_semanal tem os 200 contatos da semana (so clientes com carteira vigente, i.e. vendedor ativo), um vendedor de cada vez, com motivo e sugestao em portugues. Quando o vendedor perguntar 'quem eu ligo essa semana' ou 'minha fila', use a funcao gold.priorizar_carteira(vendedor, n) em vez de reescrever a query. Quando perguntarem 'por que esse cliente esta no topo da minha lista', use gold.explicar_prioridade(cliente_id). Para resumo agregado de um vendedor use gold.resumo_vendedor(vendedor), e para localizar um cliente pelo nome use gold.buscar_cliente(termo). Alguns vendedores tem nomes duplicados na origem (dois com o mesmo nome) - a coluna vendedor de fila_semanal ja vem desambiguada com o vendedor_id entre parenteses quando isso acontece (ex.: 'Henrique Oliveira (#34)')."
         ]
       }
     ]

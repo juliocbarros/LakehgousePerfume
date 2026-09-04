@@ -1,4 +1,4 @@
-# O job rotaperfume_pipeline, completo nesta entrega 6 (12 tarefas):
+# O job rotaperfume_pipeline (15 tarefas):
 #
 #   raw_conferencia        (entrega 1)
 #     └── bronze_ingestao   (entrega 2)
@@ -9,8 +9,11 @@
 #                       └── gold_fato_vendas
 #                             └── gold_marts
 #                                   ├── testes (obrigatório, derruba o job se falhar)
-#                                   └── metricas_de_negocio (entrega 6 — esta)
+#                                   └── metricas_de_negocio (entrega 6)
 #                                         └── auditoria_de_metadado (obrigatória, derruba o job se falhar)
+#                                               └── ml_features (noite 3, prompt 1)
+#                                                     └── ml_modelo (noite 3, prompt 2)
+#                                                           └── ml_fila (noite 3, prompt 3 — esta)
 #
 # raw_conferencia confere que os 10 CSVs chegaram ao Volume bronze.raw.
 # bronze_ingestao só roda se a conferência passar: a ordem é o conteúdo.
@@ -19,6 +22,13 @@
 # anterior escreveu. Depois de marts, duas cadeias em paralelo: testes (a
 # última linha de defesa numérica) e metricas_de_negocio → auditoria_de_
 # metadado (as views de negócio e a última linha de defesa de metadado).
+# ml_features só roda depois de testes E auditoria_de_metadado — o modelo
+# não deve treinar em cima de dado que ainda não passou na validação.
+# ml_modelo treina em cima de ml_features e quebra se o modelo não se pagar
+# (três asserts: não pode ser bom demais, tem que ser melhor que moeda, e
+# tem que ordenar melhor que aleatório).
+# ml_fila cruza o score com a carteira vigente e escreve os 200 contatos
+# da semana e as quatro funções que o agente consulta.
 
 resources:
   jobs:
@@ -139,4 +149,30 @@ resources:
             warehouse_id: ${var.warehouse_id}
             file:
               path: ../src/gold/10-auditoria-metadado.sql
+              source: WORKSPACE
+
+        - task_key: ml_features
+          depends_on:
+            - task_key: testes
+            - task_key: auditoria_de_metadado
+          notebook_task:
+            notebook_path: ../src/ml/features.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: ml_modelo
+          depends_on:
+            - task_key: ml_features
+          notebook_task:
+            notebook_path: ../src/ml/modelo.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: ml_fila
+          depends_on:
+            - task_key: ml_modelo
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../src/gold/11-fila-semanal.sql
               source: WORKSPACE

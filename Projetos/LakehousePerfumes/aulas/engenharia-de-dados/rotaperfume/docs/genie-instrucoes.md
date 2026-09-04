@@ -70,3 +70,21 @@ para saber quais meses são de pico.
   `ruptura_por_marca`) já respondem as perguntas mais comuns; prefira usá-
   las em vez de reagregar `fato_vendas` do zero quando a pergunta bater com
   uma delas.
+
+## Fila semanal e ferramentas do vendedor
+
+`gold.fila_semanal` tem os 200 contatos da semana (só clientes com carteira
+vigente, ou seja, vendedor ativo), um vendedor de cada vez, com `motivo` e
+`sugestao` já em português. Use as funções em vez de reescrever a lógica:
+
+- **"Quem eu ligo essa semana?" / "minha fila"** →
+  `gold.priorizar_carteira(vendedor, n)`.
+- **"Por que esse cliente está no topo da minha lista?"** →
+  `gold.explicar_prioridade(cliente_id)`.
+- **Resumo agregado de um vendedor** → `gold.resumo_vendedor(vendedor)`.
+- **Localizar um cliente pelo nome** → `gold.buscar_cliente(termo)`.
+
+Alguns vendedores têm o mesmo nome na origem (dois cadastros distintos com
+o nome igual). A coluna `vendedor` de `fila_semanal` já vem desambiguada
+com o `vendedor_id` entre parênteses quando isso acontece (ex.: "Henrique
+Oliveira (#34)") — use o nome exatamente como aparece na tabela.
