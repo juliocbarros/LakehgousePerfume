@@ -1,15 +1,24 @@
-# Este repositório git vive na raiz de Documentos, mas só o projeto
-# LakehousePerfumes (e este arquivo/README) devem entrar no Git — tudo o
-# resto em Documentos é pessoal e nunca deve ser versionado aqui.
+# Este repositório git vive na raiz de Documentos, mas só os projetos
+# LakehousePerfumes e Olist (e este arquivo/README) devem entrar no Git —
+# tudo o resto em Documentos é pessoal e nunca deve ser versionado aqui.
 
 # Ignora tudo na raiz por padrão...
 /*
 # ...exceto o que é do projeto.
 !/README.md
 !/.gitignore
+!/.gitattributes
 !/Projetos
 
 # Dentro de Projetos, ignora tudo...
 /Projetos/*
 # ...exceto o LakehousePerfumes.
 !/Projetos/LakehousePerfumes
+# ...e o dashboard Power BI do Olist (o resto do projeto Olist fica de fora).
+!/Projetos/Olist
+/Projetos/Olist/*
+!/Projetos/Olist/Olist_DataEnginier
+/Projetos/Olist/Olist_DataEnginier/*
+!/Projetos/Olist/Olist_DataEnginier/Dashboard PowerBi
+/Projetos/Olist/Olist_DataEnginier/Dashboard PowerBi/*
+!/Projetos/Olist/Olist_DataEnginier/Dashboard PowerBi/Project_Olist.pbix
